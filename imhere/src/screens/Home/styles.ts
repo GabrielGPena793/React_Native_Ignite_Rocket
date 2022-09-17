@@ -5,7 +5,8 @@ export const styles = StyleSheet.create({
   container: {
     backgroundColor: '#131016',
     flex: 1,
-    padding: 20
+    padding: 20,
+    paddingTop: 50
   },
   eventDate: {
     color: "#6B6B6B",
@@ -48,5 +49,8 @@ export const styles = StyleSheet.create({
     color: "#FFF",
     fontSize: 14,
     textAlign: 'center'
+  },
+  cancel: {
+    backgroundColor: "red"
   }
 })
