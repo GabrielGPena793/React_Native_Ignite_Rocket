@@ -11,7 +11,6 @@ export function Input({ ...rest }: TextInputProps) {
       placeholderTextColor={COLORS.GRAY_300}
       {...rest}
     />
-
   )
 
 }
