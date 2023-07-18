@@ -2,9 +2,9 @@ import { ThemeProvider } from 'styled-components';
 import { StatusBar } from 'react-native';
 import { useFonts, Roboto_400Regular, Roboto_700Bold } from '@expo-google-fonts/roboto'
 
-import theme from './src/theme'
+import theme from '@theme/index'
 
-import { Routes } from './src/routes';
+import { Routes } from '@routes/index';
 import Loading from '@components/Loading';
 
 export default function App() {

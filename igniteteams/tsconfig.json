@@ -19,6 +19,12 @@
       "@utils/*": [
         "./src/utils/*"
       ],
+      "@theme/*" : [
+        "./src/theme/*"
+      ],
+      "@routes/*": [
+        "./src/routes/*"
+      ]
     }
   }
 }
