@@ -5,10 +5,11 @@ import {
   Roboto_700Bold,
 } from "@expo-google-fonts/roboto";
 import { StatusBar } from "react-native";
+
 import { Loading } from "@components/Loading";
 import { THEME } from "./src/theme";
-import { SignIn } from "@screens/SignIn";
-import { SignUp } from "@screens/SignUp";
+
+import { Routes } from "@routes/index";
 
 export default function App() {
   const [fontsLoad] = useFonts({ Roboto_400Regular, Roboto_700Bold });
@@ -20,7 +21,7 @@ export default function App() {
         backgroundColor="transparent"
         translucent
       />
-      {fontsLoad ? <SignUp /> : <Loading />}
+      {fontsLoad ? <Routes /> : <Loading />}
     </NativeBaseProvider>
   );
 }
