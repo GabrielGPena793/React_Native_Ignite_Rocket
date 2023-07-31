@@ -14,6 +14,10 @@ export function Input({...rest}: IInputProps) {
       fontFamily='body'
       placeholderTextColor='gray.300'
 
+      _disabled={{
+        bgColor: 'gray.500'
+      }}
+
       _focus={{
         bg: 'gray.700',
         borderWidth: 1,
