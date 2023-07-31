@@ -12,7 +12,7 @@ export function ExerciseCard({...rest}: ExerciseCardPros) {
         <Image 
           source={{ uri: 'https://p2.trrsf.com/image/fget/cf/1200/900/middle/images.terra.com/2023/06/01/1855366748-remada-alta-1.jpg'}}
           alt="Imagem do exercício"
-          resizeMode="center"
+          resizeMode="cover"
           w={16}
           h={16}
           rounded='md'
