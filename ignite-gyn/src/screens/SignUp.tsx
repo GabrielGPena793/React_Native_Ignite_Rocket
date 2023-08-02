@@ -1,16 +1,42 @@
 import { useNavigation } from "@react-navigation/native"
+import { useForm } from "react-hook-form"
+import * as yup from "yup"
+import { yupResolver } from "@hookform/resolvers/yup"
 
 import { Center, Heading, Image, Text, VStack, ScrollView } from "native-base"
-import { Input } from "@components/Input"
 import { Button } from "@components/Button"
 
 import LogoSvg from '@assets/logo.svg'
 import backgroundImg from "@assets/background.png"
 
+import { ControlledInput } from "@components/ControlledInput"
+
+type FormDataProps = { 
+  name: string
+  email: string
+  password: string
+  passwordConfirm: string
+}
+
+const signUpSchema = yup.object({
+  name: yup.string().required("Informe o nome."),
+  email: yup.string().required("Informe o email.").email("E-mail invalido."),
+  password: yup.string().required("Informe a senha.").min(6, "A senha deve ter pelo menos 6 dígitos."),
+  passwordConfirm: yup.string().required("Confirme a senha.").oneOf([yup.ref("password")], 'As senhas não são iguais.')
+})
 
 export function SignUp() {
 
+  const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
+    resolver: yupResolver(signUpSchema)
+  })
+
   const navigation = useNavigation()
+
+  function handleSignUp({name, email, passwordConfirm, password}: FormDataProps){
+    console.log({name, email, passwordConfirm, password})
+
+  }
 
   function handleGoBack() {
     navigation.goBack()
@@ -42,32 +68,47 @@ export function SignUp() {
             Crie sua conta
           </Heading>
 
-
-          <Input
+          <ControlledInput
+            name="name"
+            control={control}
             placeholder="Nome"
-            mb={4}
+            error={errors.name}
           />
 
-          <Input
+          <ControlledInput
+            name="email"
+            control={control}
             placeholder="E-mail"
             keyboardType="email-address"
             autoCapitalize="none"
-            mb={4}
+            error={errors.email}
           />
 
-          <Input
+          <ControlledInput
+            name="password"
+            control={control}
             placeholder="Senha"
             secureTextEntry
-            mb={4}
+            error={errors.password}
           />
 
-          <Button text="Acessar" />
+          <ControlledInput
+            name="passwordConfirm"
+            control={control}
+            placeholder="Confirme a senha"
+            secureTextEntry
+            onSubmitEditing={handleSubmit(handleSignUp)}
+            returnKeyType="send"
+            error={errors.passwordConfirm}
+          />
+
+          <Button text="Criar e acessar" onPress={handleSubmit(handleSignUp)} />
         </Center>
 
         <Button
           text="Voltar para o login"
           variant='outline'
-          mt={24}
+          mt={12}
           onPress={handleGoBack}
         />
       </VStack>

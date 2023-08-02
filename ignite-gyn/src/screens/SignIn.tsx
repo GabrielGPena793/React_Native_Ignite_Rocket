@@ -38,7 +38,7 @@ export function SignIn() {
         </Center>
 
         <Center>
-          <Heading color='gray.100' fontSize='xl' mb={6} fontFamily='heading'>
+          <Heading color='gray.100' fontSize='xl'  mb={6} fontFamily='heading'>
             Acesse sua conta
           </Heading>
 
@@ -63,7 +63,7 @@ export function SignIn() {
             Ainda não tem acesso ?
           </Text>
 
-          <Button text="Acessar" variant='outline' onPress={handleNewAccount} />
+          <Button text="Criar conta" variant='outline' onPress={handleNewAccount} />
         </Center>
       </VStack>
     </ScrollView>

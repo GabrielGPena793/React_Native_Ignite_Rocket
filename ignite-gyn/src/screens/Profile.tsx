@@ -74,7 +74,7 @@ export function Profile() {
           )}
 
           <TouchableOpacity onPress={handleUserPhotoSelect}>
-            <Heading color='green.500' fontSize='md' mt={3} mb={8}>
+            <Heading color='green.500' fontSize='md' fontFamily="heading" mt={3} mb={8}>
               Alterar foto
             </Heading>
           </TouchableOpacity>
@@ -91,7 +91,7 @@ export function Profile() {
             isDisabled
           />
 
-          <Heading color='gray.200' fontSize='md' mb={2} mt={12} alignSelf='flex-start'>
+          <Heading color='gray.200' fontSize='md' fontFamily="heading" mb={2} mt={12} alignSelf='flex-start'>
             Alterar senha
           </Heading>
 

@@ -24,6 +24,11 @@ export function Input({...rest}: IInputProps) {
         borderColor: 'green.500',
       }}
 
+      _invalid={{
+        borderWidth: 1,
+        borderColor: 'red.500',
+      }}
+
       {...rest}
     />
   )

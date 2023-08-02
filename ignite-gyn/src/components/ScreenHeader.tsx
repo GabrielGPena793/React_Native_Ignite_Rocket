@@ -7,7 +7,7 @@ type ScreenHeaderProps = {
 export function ScreenHeader({ tittle }: ScreenHeaderProps) {
   return (
     <Center bg='gray.600' pb={6} pt={16}>
-      <Heading color='gray.100' fontSize='xl'>
+      <Heading color='gray.100' fontSize='xl' fontFamily="heading">
         {tittle}
       </Heading>
     </Center>

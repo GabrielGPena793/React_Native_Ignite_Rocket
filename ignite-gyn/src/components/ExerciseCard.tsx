@@ -20,7 +20,7 @@ export function ExerciseCard({...rest}: ExerciseCardPros) {
         />
 
         <VStack flex={1}>
-          <Heading fontSize='lg' color='white'>
+          <Heading fontSize='lg' color='white' fontFamily="heading">
             Remada alta
           </Heading>
           <Text fontSize='sm' color='gray.200' numberOfLines={2}>
