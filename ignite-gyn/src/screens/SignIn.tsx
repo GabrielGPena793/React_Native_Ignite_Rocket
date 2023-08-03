@@ -1,20 +1,63 @@
 import { useNavigation } from '@react-navigation/native'
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes"
 
-import { Center, Heading, Image, Text, VStack, ScrollView } from "native-base"
-import { Input } from "@components/Input"
+import { Center, Heading, Image, Text, VStack, ScrollView, useToast } from "native-base"
 import { Button } from "@components/Button"
 
 import LogoSvg from '@assets/logo.svg'
 import backgroundImg from "@assets/background.png"
+import { useAuth } from '@hooks/useAuth'
+import { ControlledInput } from '@components/ControlledInput'
+import { useForm } from 'react-hook-form'
+
+import * as yup from 'yup'
+import { yupResolver} from '@hookform/resolvers/yup'
+import { AppError } from '@utils/AppError'
+import { useState } from 'react'
+
+const schema = yup.object({
+  email: yup.string().email("E-mail inválido.").required("Insira o e-mail."),
+  password: yup.string().required("Insira a senha.")
+})
+
+type SignInDataProps = typeof schema.__outputType
 
 export function SignIn() {
+
+  const [isLoading, setIsLoading] = useState(false)
+
+  const { signIn } = useAuth()
+  const toast = useToast()
+
+  const { control, handleSubmit, formState: { errors } } = useForm<SignInDataProps>({
+    resolver: yupResolver(schema)
+  })
 
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
 
   function handleNewAccount() {
     navigation.navigate('signUp')
   }
+
+  async function handleSignIn({ email, password }: SignInDataProps) {
+    try {
+      setIsLoading(true)
+      await signIn(email, password)
+
+    } catch (error) {
+      const isAppError = error instanceof AppError
+
+      setIsLoading(false)
+
+      const title = isAppError ? error.message : "Erro no servidor."
+      if(isAppError) {
+        toast.show({ title, placement: 'top', bg: 'red.500' })
+      } else {
+        toast.show({ title, placement: 'top', bg: 'red.500' })
+      }
+    }
+  }
+
 
   return (
     <ScrollView
@@ -38,24 +81,32 @@ export function SignIn() {
         </Center>
 
         <Center>
-          <Heading color='gray.100' fontSize='xl'  mb={6} fontFamily='heading'>
+          <Heading color='gray.100' fontSize='xl' mb={6} fontFamily='heading'>
             Acesse sua conta
           </Heading>
 
-          <Input
+          <ControlledInput
+            name='email'
+            control={control}
             placeholder="E-mail"
             keyboardType="email-address"
             autoCapitalize="none"
-            mb={4}
+            error={errors.email}
           />
 
-          <Input
+          <ControlledInput
+            name='password'
+            control={control}
             placeholder="Senha"
             secureTextEntry
-            mb={4}
+            error={errors.password}
           />
 
-          <Button text="Acessar" />
+          <Button 
+            text="Acessar" 
+            onPress={handleSubmit(handleSignIn)}
+            isLoading={isLoading}
+          />
         </Center>
 
         <Center mt={24}>

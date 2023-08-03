@@ -13,6 +13,8 @@ import LogoSvg from '@assets/logo.svg'
 import backgroundImg from "@assets/background.png"
 import { Alert } from "react-native"
 import { AppError } from "@utils/AppError"
+import { useAuth } from "@hooks/useAuth"
+import { useState } from "react"
 
 
 type FormDataProps = {
@@ -30,8 +32,10 @@ const signUpSchema = yup.object({
 })
 
 export function SignUp() {
+  const [isLoading, setIsLoading] = useState(false)
 
   const toast = useToast()
+  const { signUp } = useAuth()
 
   const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
     resolver: yupResolver(signUpSchema)
@@ -41,24 +45,17 @@ export function SignUp() {
 
   async function handleSignUp({ name, email, password }: FormDataProps) {
     try {
-      const response = await api.post('/users', { 
-        email,
-        name,
-        password
-      })
+      setIsLoading(true)
+      await signUp(name, email, password)
 
-      console.log(response.data)
     } catch (error) {
       const isAppError = error instanceof AppError
       const title = isAppError ? error.message : "Não foi possível criar a conta, tente novamente mais tarde."
 
-      toast.show({
-        title,
-        placement: 'top',
-        bgColor: 'red.500'
-      })
+      toast.show({ title, placement: 'top', bgColor: 'red.500' })
+    }
 
-    }  
+    setIsLoading(false)
   }
 
   function handleGoBack() {
@@ -125,7 +122,11 @@ export function SignUp() {
             error={errors.passwordConfirm}
           />
 
-          <Button text="Criar e acessar" onPress={handleSubmit(handleSignUp)} />
+          <Button
+            text="Criar e acessar"
+            onPress={handleSubmit(handleSignUp)}
+            isLoading={isLoading}
+          />
         </Center>
 
         <Button
