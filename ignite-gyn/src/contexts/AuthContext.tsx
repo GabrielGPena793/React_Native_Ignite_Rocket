@@ -11,6 +11,7 @@ export type AuthContextDataProps = {
   verifyUserAuthentication: () => Promise<void>;
   signOut: () => Promise<void>;
   signUp: (name: string, email: string, password: string) => Promise<void>;
+  updateUserProfile: (userUpdated: UserDTO) => Promise<void>;
   isLoadingUserData: boolean;
 }
 
@@ -57,23 +58,36 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
     } catch (error) {
       throw error
-    }
 
-    setIsLoadingUserData(false)
+    }finally {
+      setIsLoadingUserData(false)
+    }
   }
 
   async function signOut() {
     try {
       setIsLoadingUserData(true)
+      
       setUser({} as UserDTO)
       await storageRemoveUser()
       await storageAuthTokenRemove()
 
     } catch (error) {
       throw error;
-    }
 
-    setIsLoadingUserData(false)
+    }finally {
+      setIsLoadingUserData(false)
+    }
+  }
+
+  async function updateUserProfile(userUpdated: UserDTO) {
+    try {
+      setUser(userUpdated)
+      await storageUserSave(userUpdated)
+      
+    } catch (error) {
+      throw error;
+    }
   }
 
   async function signUp(name: string, email: string, password: string) {
@@ -104,9 +118,10 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       }
     } catch (error) {
       throw error
-    }
 
-    setIsLoadingUserData(false)
+    }finally {
+      setIsLoadingUserData(false)
+    }
   }
 
   useEffect(() => {
@@ -120,7 +135,8 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       verifyUserAuthentication,
       isLoadingUserData,
       signOut,
-      signUp
+      signUp,
+      updateUserProfile
     }}>
       {children}
     </AuthContext.Provider>

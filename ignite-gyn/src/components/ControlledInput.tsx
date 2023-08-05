@@ -16,9 +16,6 @@ export function ControlledInput({ name, control, error, ...rest }: ControlledInp
       <Controller
         name={name}
         control={control}
-        rules={{ 
-          required: `informe o ${name}`
-        }}
         render={({ field: { onChange, value } }) => (
           <Input
             onChangeText={onChange}

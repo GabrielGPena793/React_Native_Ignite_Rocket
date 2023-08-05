@@ -23,7 +23,7 @@ export async function storageAuthTokenGet() {
 
 export async function storageAuthTokenRemove() {
   try {
-    const token = await AsyncStorage.removeItem(AUTH_TOKEN);
+    await AsyncStorage.removeItem(AUTH_TOKEN);
   } catch (error) {
     throw error;
   }
