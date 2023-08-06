@@ -4,6 +4,7 @@ import { Center, Heading, ScrollView, Skeleton, VStack, useToast } from "native-
 
 import * as ImagePicker from "expo-image-picker"
 import * as FileSystem from 'expo-file-system';
+import userPhotoDefaultPng from "@assets/userPhotoDefault.png"
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup"
@@ -18,7 +19,13 @@ import { ControlledInput } from "@components/ControlledInput";
 import { AppError } from "@utils/AppError";
 import { api } from "@services/api";
 
-const PHOTO_SIZE = 33;
+type FormDataType = {
+  email: string;
+  name: string;
+  password: string;
+  old_password: string;
+  confirm_password: string;
+}
 
 const profileSchema = yup.object({
   name: yup.string().required("Informe o nome."),
@@ -30,20 +37,13 @@ const profileSchema = yup.object({
     .nullable()
     .transform(value => !!value ? value : null)
     .oneOf([yup.ref('password'), null], "A senhas não são iguais.")
-})
+}) 
 
-type FormDataType = {
-  email: string;
-  name: string;
-  password: string;
-  old_password: string;
-  confirm_password: string;
-}
+const PHOTO_SIZE = 33;
 
 export function Profile() {
   const [updatingUser, setUpdatingUser] = useState(false)
   const [photoLoading, setPhotoLoading] = useState(false)
-  const [userPhoto, setUserPhoto] = useState('http://github.com/gabrielgpena793.png')
 
   const toast = useToast()
   const { user, updateUserProfile } = useAuth()
@@ -74,6 +74,7 @@ export function Profile() {
       })
 
       if (photoSelected.canceled) {
+        setPhotoLoading(false)
         return;
       }
 
@@ -88,12 +89,44 @@ export function Profile() {
         })
       }
 
-      setUserPhoto(photoSelected.assets[0].uri)
+      const fileExtension = photoSelected.assets[0].uri.split('.').pop()
+
+      const photoFile = {
+        name: `${user.name}.${fileExtension}`.toLowerCase(),
+        uri: photoSelected.assets[0].uri,
+        type: `${photoSelected.assets[0].type}/${fileExtension}`,
+      } as any;
+
+      const userPhotoUploadForm = new FormData()
+      userPhotoUploadForm.append("avatar", photoFile)
+
+      const userAvatarUpdated = await api.patch("/users/avatar", userPhotoUploadForm, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+
+      const avatarUpdated = user
+      avatarUpdated.avatar = userAvatarUpdated.data.avatar
+      updateUserProfile(avatarUpdated)
+
+      toast.show({
+        title: "Foto atualizada.",
+        placement: 'top',
+        bg: 'green.500'
+      })
+
     } catch (error) {
-      console.log('handleUserPhotoSelect', error)
+      const title = AppError.isAppError(error)
+
+      toast.show({
+        title,
+        placement: 'top',
+        bg: 'red.500'
+      })
     }
 
-    setPhotoLoading(false)
+    setPhotoLoading(false);
   }
 
   async function handleUpdatePassword(data: FormDataType) {
@@ -143,7 +176,7 @@ export function Profile() {
             />
           ) : (
             <UserPhoto
-              source={{ uri: userPhoto }}
+              source={user.avatar ? { uri : `${api.defaults.baseURL}/avatar/${user.avatar}` } : userPhotoDefaultPng }
               alt="Foto do usuário"
               size={PHOTO_SIZE}
             />
